@@ -1,0 +1,1 @@
+# keycloak-event-listener-rabbitmq

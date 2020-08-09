@@ -1,0 +1,16 @@
+embed-server --server-config=standalone-ha.xml --std-out=echo
+batch
+
+
+/subsystem=keycloak-server/spi=eventsListener/:add
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:add(enabled="true")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=url,value="${env.KK_TO_RMQ_URL:localhost}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=username,value="${env.KK_TO_RMQ_USERNAME:guest}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=password,value="${env.KK_TO_RMQ_PASSWORD:guest}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=vhost,value="${env.KK_TO_RMQ_VHOST:}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=port,value=${env.KK_TO_RMQ_PORT:5672})
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=exchange,value="${env.KK_TO_RMQ_EXCHANGE:amq.topic}")
+
+
+run-batch
+stop-embedded-server

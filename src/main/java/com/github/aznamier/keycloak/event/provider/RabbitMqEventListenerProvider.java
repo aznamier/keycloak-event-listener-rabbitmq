@@ -1,5 +1,8 @@
 package com.github.aznamier.keycloak.event.provider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.admin.AdminEvent;
@@ -53,9 +56,13 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 	}
 	
 	private BasicProperties getMessageProps(String className) {
+		
+		Map<String,Object> headers = new HashMap<String,Object>();
+		headers.put("__TypeId__", className);
+		
 		Builder propsBuilder = new AMQP.BasicProperties.Builder()
 				.appId("Keycloak")
-				.type(EventAdminNotificationMqMsg.class.getName())
+				.headers(headers)
 				.contentType("application/json")
 				.contentEncoding("UTF-8");
 		return propsBuilder.build();

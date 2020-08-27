@@ -1,0 +1,5 @@
+KEYCLOAK_TO_RABBIT.cli
+
+To use it put it into /opt/jboss/startup-scripts/
+
+This will install this pluging into WildFly configuration XML on a startup

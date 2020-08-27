@@ -36,11 +36,12 @@ public class RabbitMqConfig {
 	}
 	
 	public static String calculateRoutingKey(Event event) {
-		//KK.EVENT.CLIENT.<REALM>.<RESULT>.<EVENT_TYPE>
+		//KK.EVENT.CLIENT.<REALM>.<RESULT>.<CLIENT>.<EVENT_TYPE>
 		String routingKey = ROUTING_KEY_PREFIX
 					+ ".CLIENT"
-					+ "." + (event.getError() != null ? "ERROR" : "SUCCESS")
 					+ "." + event.getRealmId()
+					+ "." + (event.getError() != null ? "ERROR" : "SUCCESS")
+					+ "." + event.getClientId()
 					+ "." + event.getType();
 		
 		return normalizeKey(routingKey);
@@ -49,7 +50,7 @@ public class RabbitMqConfig {
 	//Remove all characters apart a-z, A-Z, 0-9, space, underscore, eplace all spaces and hyphens with underscore
 	public static final String normalizeKey(String stringToNormalize) {
 		return stringToNormalize.replaceAll("[^\\*#a-zA-Z0-9 _.-]", "").
-				replaceAll(" ", "_").replaceAll("-", "_");
+				replaceAll(" ", "_");
 	}
 	
 	public static String writeAsJson(Object object, boolean isPretty) {

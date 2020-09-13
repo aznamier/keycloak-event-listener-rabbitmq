@@ -43,7 +43,7 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
 ## USAGE:
 1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-1.0.jar?raw=true) or build from source: ``mvn clean install``
 2. copy jar into your Keycloak `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-1.0.jar`
-3. Configure as described below (option 0 or 1 or 2)
+3. Configure as described below (option 1 or 2 or 3)
 4. Restart the Keycloak server
 5. Enable logging in Keycloak UI by adding **keycloak-to-rabbitmq**  
  `Manage > Events > Config > Events Config > Event Listeners`

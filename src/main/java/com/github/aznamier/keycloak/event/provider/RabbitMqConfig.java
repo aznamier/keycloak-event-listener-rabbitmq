@@ -26,7 +26,7 @@ public class RabbitMqConfig {
 		//KK.EVENT.ADMIN.<REALM>.<RESULT>.<RESOURCE_TYPE>.<OPERATION>
 		String routingKey = ROUTING_KEY_PREFIX
 				+ ".ADMIN"
-				+ "." + adminEvent.getRealmId()
+				+ "." + removeDots(adminEvent.getRealmId())
 				+ "." + (adminEvent.getError() != null ? "ERROR" : "SUCCESS")
 				+ "." + adminEvent.getResourceTypeAsString()
 				+ "." + adminEvent.getOperationType().toString()
@@ -39,9 +39,9 @@ public class RabbitMqConfig {
 		//KK.EVENT.CLIENT.<REALM>.<RESULT>.<CLIENT>.<EVENT_TYPE>
 		String routingKey = ROUTING_KEY_PREFIX
 					+ ".CLIENT"
-					+ "." + event.getRealmId()
+					+ "." + removeDots(event.getRealmId())
 					+ "." + (event.getError() != null ? "ERROR" : "SUCCESS")
-					+ "." + event.getClientId()
+					+ "." + removeDots(event.getClientId())
 					+ "." + event.getType();
 		
 		return normalizeKey(routingKey);
@@ -51,6 +51,13 @@ public class RabbitMqConfig {
 	public static final String normalizeKey(String stringToNormalize) {
 		return stringToNormalize.replaceAll("[^\\*#a-zA-Z0-9 _.-]", "").
 				replaceAll(" ", "_");
+	}
+	
+	public static final String removeDots(String stringToNormalize) {
+		if(stringToNormalize != null) {
+			stringToNormalize = stringToNormalize.replaceAll("\\.", "");
+		}
+		return stringToNormalize;
 	}
 	
 	public static String writeAsJson(Object object, boolean isPretty) {

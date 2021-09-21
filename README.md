@@ -40,6 +40,12 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
 * all error events from my realm: `KK.EVENT.*.MYREALM.ERROR.#`
 * all user events from my-relam and my-client: `KK.EVENT.*.MY-REALM.*.MY-CLIENT.USER`
 
+
+| Plugin | min Keycloak version |
+| --- | ----------- |
+| 1.x | 10.x |
+| 2.x | 13.x |
+
 ## USAGE:
 1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-1.0.1.jar?raw=true) or build from source: ``mvn clean install``
 2. copy jar into your Keycloak `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-1.0.1.jar`

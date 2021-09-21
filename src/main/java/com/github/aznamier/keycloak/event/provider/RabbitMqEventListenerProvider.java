@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
+import org.keycloak.events.EventListenerTransaction;
 import org.keycloak.events.admin.AdminEvent;
+import org.keycloak.models.KeycloakSession;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -18,8 +20,12 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 
 	private RabbitMqConfig cfg;
 	private ConnectionFactory factory;
+	
+    private KeycloakSession session;
+    
+	private EventListenerTransaction tx = new EventListenerTransaction(this::publishAdminEvent, this::publishEvent);
 
-	public RabbitMqEventListenerProvider(RabbitMqConfig cfg) {
+	public RabbitMqEventListenerProvider(RabbitMqConfig cfg, KeycloakSession session) {
 		this.cfg = cfg;
 		
 		this.factory = new ConnectionFactory();
@@ -29,6 +35,10 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		this.factory.setVirtualHost(cfg.getVhost());
 		this.factory.setHost(cfg.getHostUrl());
 		this.factory.setPort(cfg.getPort());
+		
+		this.session = session;
+		this.session.getTransactionManager().enlistAfterCompletion(tx);
+		
 	}
 
 	@Override
@@ -38,6 +48,15 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 
 	@Override
 	public void onEvent(Event event) {
+		tx.addEvent(event);
+	}
+
+	@Override
+	public void onEvent(AdminEvent adminEvent, boolean includeRepresentation) {
+		tx.addAdminEvent(adminEvent, includeRepresentation);
+	}
+	
+	private void publishEvent(Event event) {
 		EventClientNotificationMqMsg msg = EventClientNotificationMqMsg.create(event);
 		String routingKey = RabbitMqConfig.calculateRoutingKey(event);
 		String messageString = RabbitMqConfig.writeAsJson(msg, true);
@@ -45,11 +64,10 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		BasicProperties msgProps = this.getMessageProps(EventClientNotificationMqMsg.class.getName());
 		this.publishNotification(messageString, msgProps, routingKey);
 	}
-
-	@Override
-	public void onEvent(AdminEvent event, boolean includeRepresentation) {
-		EventAdminNotificationMqMsg msg = EventAdminNotificationMqMsg.create(event);
-		String routingKey = RabbitMqConfig.calculateRoutingKey(event);
+	
+	private void publishAdminEvent(AdminEvent adminEvent, boolean includeRepresentation) {
+		EventAdminNotificationMqMsg msg = EventAdminNotificationMqMsg.create(adminEvent);
+		String routingKey = RabbitMqConfig.calculateRoutingKey(adminEvent);
 		String messageString = RabbitMqConfig.writeAsJson(msg, true);
 		BasicProperties msgProps = this.getMessageProps(EventAdminNotificationMqMsg.class.getName());
 		this.publishNotification(messageString,msgProps, routingKey);

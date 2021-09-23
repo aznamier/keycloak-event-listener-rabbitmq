@@ -12,7 +12,7 @@ public class RabbitMqEventListenerProviderFactory implements EventListenerProvid
 
 	@Override
 	public EventListenerProvider create(KeycloakSession session) {
-		return new RabbitMqEventListenerProvider(cfg);
+		return new RabbitMqEventListenerProvider(cfg, session);
 	}
 
 	@Override

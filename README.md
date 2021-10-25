@@ -67,7 +67,7 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
 
 ```xml
 <spi name="eventsListener">
-    <provider name="mqtt" enabled="true">
+    <provider name="keycloak-to-rabbitmq" enabled="true">
         <properties>
             <property name="url" value="${env.KK_TO_RMQ_URL:localhost}"/>
             <property name="port" value="${env.KK_TO_RMQ_PORT:5672}"/>

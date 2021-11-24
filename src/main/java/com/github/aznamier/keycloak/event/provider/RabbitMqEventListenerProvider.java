@@ -1,5 +1,7 @@
 package com.github.aznamier.keycloak.event.provider;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,6 +37,14 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		this.factory.setVirtualHost(cfg.getVhost());
 		this.factory.setHost(cfg.getHostUrl());
 		this.factory.setPort(cfg.getPort());
+
+		if(cfg.getUseTls()) {
+			try {
+				this.factory.useSslProtocol();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		
 		this.session = session;
 		this.session.getTransactionManager().enlistAfterCompletion(tx);

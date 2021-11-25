@@ -10,6 +10,7 @@ batch
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=vhost,value="${env.KK_TO_RMQ_VHOST:}")
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=port,value=${env.KK_TO_RMQ_PORT:5672})
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=exchange,value="${env.KK_TO_RMQ_EXCHANGE:amq.topic}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=use_tls,value="${env.KK_TO_RMQ_USE_TLS:false}")
 
 
 run-batch

@@ -47,8 +47,8 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
 
 
 ## USAGE:
-1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-2.0.jar?raw=true) or build from source: ``mvn clean install``
-2. copy jar into your Keycloak `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-2.0.jar`
+1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-2.1.jar?raw=true) or build from source: ``mvn clean install``
+2. copy jar into your Keycloak `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-2.1.jar`
 3. Configure as described below (option 1 or 2 or 3)
 4. Restart the Keycloak server
 5. Enable logging in Keycloak UI by adding **keycloak-to-rabbitmq**  
@@ -74,6 +74,7 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
             <property name="port" value="${env.KK_TO_RMQ_PORT:5672}"/>
             <property name="vhost" value="${env.KK_TO_RMQ_VHOST:}"/>
             <property name="exchange" value="${env.KK_TO_RMQ_EXCHANGE:amq.topic}"/>
+            <property name="use_tls" value="${env.KK_TO_RMQ_USE_TLS:false}"/>
             
             <property name="username" value="${env.KK_TO_RMQ_USERNAME:guest}"/>
             <property name="password" value="${env.KK_TO_RMQ_PASSWORD:guest}"/>

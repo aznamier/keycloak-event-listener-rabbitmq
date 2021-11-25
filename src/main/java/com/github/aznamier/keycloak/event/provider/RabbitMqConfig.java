@@ -144,7 +144,7 @@ public class RabbitMqConfig {
 	public Boolean getUseTls() {
 		return useTls;
 	}
-	public void setuseTls(Boolean useTls) {
+	public void setUseTls(Boolean useTls) {
 		this.useTls = useTls;
 	}
 	public String getExchange() {

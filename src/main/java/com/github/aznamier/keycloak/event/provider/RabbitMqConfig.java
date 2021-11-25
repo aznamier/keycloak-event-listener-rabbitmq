@@ -19,7 +19,8 @@ public class RabbitMqConfig {
 	private String username;
 	private String password;
 	private String vhost;
-	
+	private Boolean useTls;
+
 	private String exchange;
 	
 	public static String calculateRoutingKey(AdminEvent adminEvent) {
@@ -85,7 +86,8 @@ public class RabbitMqConfig {
 		cfg.username = resolveConfigVar(config, "username", "admin");
 		cfg.password = resolveConfigVar(config, "password", "admin");
 		cfg.vhost = resolveConfigVar(config, "vhost", "");
-        
+		cfg.useTls = Boolean.valueOf(resolveConfigVar(config, "use_tls", "false"));
+
 		cfg.exchange = resolveConfigVar(config, "exchange", "amq.topic");
 		return cfg;
 		
@@ -138,6 +140,12 @@ public class RabbitMqConfig {
 	}
 	public void setVhost(String vhost) {
 		this.vhost = vhost;
+	}
+	public Boolean getUseTls() {
+		return useTls;
+	}
+	public void setuseTls(Boolean useTls) {
+		this.useTls = useTls;
 	}
 	public String getExchange() {
 		return exchange;

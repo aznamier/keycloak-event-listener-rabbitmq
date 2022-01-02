@@ -7,6 +7,7 @@ import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import org.jboss.logging.Logger;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerTransaction;
@@ -17,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RabbitMqEventListenerProvider implements EventListenerProvider {
-
+    private static final Logger logger = Logger.getLogger(RabbitMqEventListenerProvider.class);
     private final RabbitMqConfig cfg;
     private final ConnectionFactory factory;
 
@@ -98,10 +99,9 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
             channel.exchangeDeclare(cfg.getExchange(), BuiltinExchangeType.TOPIC);
 
             channel.basicPublish(cfg.getExchange(), routingKey, props, messageString.getBytes());
-            System.out.println("keycloak-to-rabbitmq SUCCESS sending message: " + routingKey);
+            logger.info("keycloak-to-rabbitmq SUCCESS sending message: " + routingKey);
         } catch (Exception ex) {
-            System.err.println("keycloak-to-rabbitmq ERROR sending message: " + routingKey);
-            ex.printStackTrace();
+            logger.error("keycloak-to-rabbitmq ERROR sending message: " + routingKey, ex);
         }
     }
 

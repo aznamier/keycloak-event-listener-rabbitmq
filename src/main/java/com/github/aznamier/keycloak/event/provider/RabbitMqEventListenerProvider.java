@@ -1,10 +1,10 @@
 package com.github.aznamier.keycloak.event.provider;
 
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jboss.logging.Logger;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerTransaction;
@@ -20,12 +20,12 @@ import com.rabbitmq.client.ConnectionFactory;
 
 public class RabbitMqEventListenerProvider implements EventListenerProvider {
 
-	private RabbitMqConfig cfg;
-	private ConnectionFactory factory;
-	
-    private KeycloakSession session;
-    
-	private EventListenerTransaction tx = new EventListenerTransaction(this::publishAdminEvent, this::publishEvent);
+	private static final Logger log = Logger.getLogger(RabbitMqEventListenerProvider.class);
+
+	private final RabbitMqConfig cfg;
+	private final ConnectionFactory factory;
+
+	private final EventListenerTransaction tx = new EventListenerTransaction(this::publishAdminEvent, this::publishEvent);
 
 	public RabbitMqEventListenerProvider(RabbitMqConfig cfg, KeycloakSession session) {
 		this.cfg = cfg;
@@ -42,12 +42,11 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 			try {
 				this.factory.useSslProtocol();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error("Could not use SSL protocol", e);
 			}
 		}
-		
-		this.session = session;
-		this.session.getTransactionManager().enlistAfterCompletion(tx);
+
+		session.getTransactionManager().enlistAfterCompletion(tx);
 		
 	}
 
@@ -71,7 +70,7 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		String routingKey = RabbitMqConfig.calculateRoutingKey(event);
 		String messageString = RabbitMqConfig.writeAsJson(msg, true);
 		
-		BasicProperties msgProps = this.getMessageProps(EventClientNotificationMqMsg.class.getName());
+		BasicProperties msgProps = RabbitMqEventListenerProvider.getMessageProps(EventClientNotificationMqMsg.class.getName());
 		this.publishNotification(messageString, msgProps, routingKey);
 	}
 	
@@ -79,13 +78,13 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		EventAdminNotificationMqMsg msg = EventAdminNotificationMqMsg.create(adminEvent);
 		String routingKey = RabbitMqConfig.calculateRoutingKey(adminEvent);
 		String messageString = RabbitMqConfig.writeAsJson(msg, true);
-		BasicProperties msgProps = this.getMessageProps(EventAdminNotificationMqMsg.class.getName());
+		BasicProperties msgProps = RabbitMqEventListenerProvider.getMessageProps(EventAdminNotificationMqMsg.class.getName());
 		this.publishNotification(messageString,msgProps, routingKey);
 	}
 	
-	private BasicProperties getMessageProps(String className) {
+	private static BasicProperties getMessageProps(String className) {
 		
-		Map<String,Object> headers = new HashMap<String,Object>();
+		Map<String,Object> headers = new HashMap<>();
 		headers.put("__TypeId__", className);
 		
 		Builder propsBuilder = new AMQP.BasicProperties.Builder()
@@ -105,14 +104,13 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 			Connection conn = factory.newConnection();
 			Channel channel = conn.createChannel();
 			
-			channel.basicPublish(cfg.getExchange(), routingKey, props, messageString.getBytes());
-			System.out.println("keycloak-to-rabbitmq SUCCESS sending message: " + routingKey);
+			channel.basicPublish(cfg.getExchange(), routingKey, props, messageString.getBytes(StandardCharsets.UTF_8));
+			log.infof("keycloak-to-rabbitmq SUCCESS sending message: %s%n", routingKey);
 			channel.close();
 			conn.close();
 
 		} catch (Exception ex) {
-			System.err.println("keycloak-to-rabbitmq ERROR sending message: " + routingKey);
-			ex.printStackTrace();
+			log.errorf(ex, "keycloak-to-rabbitmq ERROR sending message: %s%n", routingKey);
 		}
 	}
 

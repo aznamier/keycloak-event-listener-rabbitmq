@@ -29,6 +29,13 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		this.factory.setVirtualHost(cfg.getVhost());
 		this.factory.setHost(cfg.getHostUrl());
 		this.factory.setPort(cfg.getPort());
+		if(cfg.getUseTls()) {
+			try {
+				this.factory.useSslProtocol();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

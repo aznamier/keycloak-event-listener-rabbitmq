@@ -41,8 +41,8 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
 * all user events from my-relam and my-client: `KK.EVENT.*.MY-REALM.*.MY-CLIENT.USER`
 
 ## USAGE:
-1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-1.0.jar?raw=true) or build from source: ``mvn clean install``
-2. copy jar into your Keycloak `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-1.0.jar`
+1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-1.1.jar?raw=true) or build from source: ``mvn clean install``
+2. copy jar into your Keycloak `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-1.1.jar`
 3. Configure as described below (option 1 or 2 or 3)
 4. Restart the Keycloak server
 5. Enable logging in Keycloak UI by adding **keycloak-to-rabbitmq**  
@@ -56,6 +56,7 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
   - `KK_TO_RMQ_EXCHANGE` - default: *amq.topic*
   - `KK_TO_RMQ_USERNAME` - default: *guest*
   - `KK_TO_RMQ_PASSWORD` - default: *guest*
+  - `KK_TO_RMQ_USE_TLS` - default: *false*
 
 ###### OPTION 2: edit Keycloak subsystem of WildFly standalone.xml or standalone-ha.xml:
 
@@ -70,6 +71,7 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
             
             <property name="username" value="${env.KK_TO_RMQ_USERNAME:guest}"/>
             <property name="password" value="${env.KK_TO_RMQ_PASSWORD:guest}"/>
+            <property name="use_tls" value="${env.KK_TO_RMQ_USE_TLS:false}"/>
         </properties>
     </provider>
 </spi>

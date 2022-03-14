@@ -1,18 +1,25 @@
 package com.github.aznamier.keycloak.event.provider;
 
 
+import java.util.Locale;
+import java.util.regex.Pattern;
+import org.jboss.logging.Logger;
 import org.keycloak.Config.Scope;
 import org.keycloak.events.Event;
 import org.keycloak.events.admin.AdminEvent;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.keycloak.util.JsonSerialization;
 
 
 public class RabbitMqConfig {
-	
-	public static final ObjectMapper rabbitMqObjectMapper = new ObjectMapper();
-	public static String ROUTING_KEY_PREFIX = "KK.EVENT";
+
+	private static final Logger log = Logger.getLogger(RabbitMqConfig.class);
+	public static final String ROUTING_KEY_PREFIX = "KK.EVENT";
+	private static final Pattern SPECIAL_CHARACTERS = Pattern.compile("[^*#a-zA-Z0-9 _.-]");
+	private static final Pattern SPACE = Pattern.compile(" ");
+	private static final Pattern DOT = Pattern.compile("\\.");
 
 	private String hostUrl;
 	private Integer port;
@@ -47,34 +54,31 @@ public class RabbitMqConfig {
 		
 		return normalizeKey(routingKey);
 	}
-	
+
 	//Remove all characters apart a-z, A-Z, 0-9, space, underscore, eplace all spaces and hyphens with underscore
-	public static final String normalizeKey(String stringToNormalize) {
-		return stringToNormalize.replaceAll("[^\\*#a-zA-Z0-9 _.-]", "").
-				replaceAll(" ", "_");
+	public static String normalizeKey(CharSequence stringToNormalize) {
+		return SPACE.matcher(SPECIAL_CHARACTERS.matcher(stringToNormalize).replaceAll(""))
+				.replaceAll("_");
 	}
 	
-	public static final String removeDots(String stringToNormalize) {
+	public static String removeDots(String stringToNormalize) {
 		if(stringToNormalize != null) {
-			stringToNormalize = stringToNormalize.replaceAll("\\.", "");
+			return DOT.matcher(stringToNormalize).replaceAll("");
 		}
 		return stringToNormalize;
 	}
 	
 	public static String writeAsJson(Object object, boolean isPretty) {
-		String messageAsJson = "unparsable";
 		try {
 			if(isPretty) {
-				messageAsJson = RabbitMqConfig.rabbitMqObjectMapper
-						.writerWithDefaultPrettyPrinter().writeValueAsString(object);
-			} else {
-				messageAsJson = RabbitMqConfig.rabbitMqObjectMapper.writeValueAsString(object);
+				return JsonSerialization.writeValueAsPrettyString(object);
 			}
-			
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
+			return JsonSerialization.writeValueAsString(object);
+
+		} catch (Exception e) {
+			log.error("Could not serialize to JSON", e);
 		}
-		return messageAsJson;
+		return "unparsable";
 	}
 	
 	
@@ -100,12 +104,15 @@ public class RabbitMqConfig {
 			value = config.get(variableName);
 		} else {
 			//try from env variables eg: KK_TO_RMQ_URL:
-			String envVariableName = "KK_TO_RMQ_" + variableName.toUpperCase();
-			if(System.getenv(envVariableName) != null) {
-				value = System.getenv(envVariableName);
+			String envVariableName = "KK_TO_RMQ_" + variableName.toUpperCase(Locale.ENGLISH);
+			String env = System.getenv(envVariableName);
+			if(env != null) {
+				value = env;
 			}
 		}
-		System.out.println("keycloak-to-rabbitmq configuration: " + variableName + "=" + value);
+		if (!"password".equals(variableName)) {
+			log.infof("keycloak-to-rabbitmq configuration: %s=%s%n", variableName, value);
+		}
 		return value;
 		
 	}

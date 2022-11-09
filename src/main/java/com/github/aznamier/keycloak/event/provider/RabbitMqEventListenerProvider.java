@@ -27,6 +27,7 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 
 	public RabbitMqEventListenerProvider(Channel channel, KeycloakSession session, RabbitMqConfig cfg) {
 		this.cfg = cfg;
+		this.channel = channel;
 		session.getTransactionManager().enlistAfterCompletion(tx);
 	}
 

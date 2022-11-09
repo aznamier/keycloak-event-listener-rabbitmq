@@ -47,7 +47,6 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		}
 
 		session.getTransactionManager().enlistAfterCompletion(tx);
-		
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 
 	@Override
 	public void onEvent(Event event) {
-		tx.addEvent(event);
+		tx.addEvent(event.clone());
 	}
 
 	@Override
@@ -78,6 +77,7 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 		EventAdminNotificationMqMsg msg = EventAdminNotificationMqMsg.create(adminEvent);
 		String routingKey = RabbitMqConfig.calculateRoutingKey(adminEvent);
 		String messageString = RabbitMqConfig.writeAsJson(msg, true);
+
 		BasicProperties msgProps = RabbitMqEventListenerProvider.getMessageProps(EventAdminNotificationMqMsg.class.getName());
 		this.publishNotification(messageString,msgProps, routingKey);
 	}
@@ -94,12 +94,8 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 				.contentEncoding("UTF-8");
 		return propsBuilder.build();
 	}
-	
 
 	private void publishNotification(String messageString, BasicProperties props, String routingKey) {
-
-		
-
 		try {
 			Connection conn = factory.newConnection();
 			Channel channel = conn.createChannel();
@@ -113,5 +109,4 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 			log.errorf(ex, "keycloak-to-rabbitmq ERROR sending message: %s%n", routingKey);
 		}
 	}
-
 }

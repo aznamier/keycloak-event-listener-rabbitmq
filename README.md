@@ -48,15 +48,17 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
 
 
 ## USAGE:
-1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-3.0.jar?raw=true) or build from source: ``mvn clean install``
-2. copy jar into your Keycloak `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-3.0.jar`
+1. [Download the latest jar](https://github.com/aznamier/keycloak-event-listener-rabbitmq/blob/target/keycloak-to-rabbit-3.0.1.jar?raw=true) or build from source: ``mvn clean install``
+2. Copy jar into your Keycloak 
+    1. Keycloak version 17+ (Quarkus) `/opt/keycloak/providers/keycloak-to-rabbit-3.0.1.jar` 
+    2. Keycloak version 16 and older `/opt/jboss/keycloak/standalone/deployments/keycloak-to-rabbit-3.0.1.jar`
 3. Configure as described below (option 1 or 2 or 3)
 4. Restart the Keycloak server
 5. Enable logging in Keycloak UI by adding **keycloak-to-rabbitmq**  
  `Manage > Events > Config > Events Config > Event Listeners`
 
 #### Configuration 
-###### OPTION 1: just configure **ENVIRONMENT VARIABLES**
+###### Recommended: OPTION 1: just configure **ENVIRONMENT VARIABLES**
   - `KK_TO_RMQ_URL` - default: *localhost*
   - `KK_TO_RMQ_PORT` - default: *5672*
   - `KK_TO_RMQ_VHOST` - default: *empty*
@@ -65,7 +67,7 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
   - `KK_TO_RMQ_PASSWORD` - default: *guest*
   - `KK_TO_RMQ_USE_TLS` - default: *false*
 
-###### OPTION 2: edit Keycloak subsystem of WildFly standalone.xml or standalone-ha.xml:
+###### Deprecated OPTION 2: edit Keycloak subsystem of WildFly (Keycloak 16 and older) standalone.xml or standalone-ha.xml:
 
 ```xml
 <spi name="eventsListener">
@@ -83,7 +85,7 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
     </provider>
 </spi>
 ```
-###### OPTION 3: same effect as OPTION 2 but programatically:
+###### Deprecated OPTION 3 same effect as OPTION 2 but programatically WildFly (Keycloak 16 and older):
 ```
 echo "yes" | $KEYCLOAK_HOME/bin/jboss-cli.sh --file=$KEYCLOAK_HOME/KEYCLOAK_TO_RABBIT.cli
 ```

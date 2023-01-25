@@ -66,6 +66,10 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
   - `KK_TO_RMQ_USERNAME` - default: *guest*
   - `KK_TO_RMQ_PASSWORD` - default: *guest*
   - `KK_TO_RMQ_USE_TLS` - default: *false*
+  - `KK_TO_RMQ_KEY_STORE` - default: *empty*
+  - `KK_TO_RMQ_KEY_STORE_PASS` - default: *empty*
+  - `KK_TO_RMQ_TRUST_STORE` - default: *empty*
+  - `KK_TO_RMQ_TRUST_STORE_PASS` - default: *empty*
 
 ###### Deprecated OPTION 2: edit Keycloak subsystem of WildFly (Keycloak 16 and older) standalone.xml or standalone-ha.xml:
 
@@ -78,7 +82,10 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
             <property name="vhost" value="${env.KK_TO_RMQ_VHOST:}"/>
             <property name="exchange" value="${env.KK_TO_RMQ_EXCHANGE:amq.topic}"/>
             <property name="use_tls" value="${env.KK_TO_RMQ_USE_TLS:false}"/>
-            
+            <property name="key_store" value="${env.KK_TO_RMQ_KEY_STORE:}"/>
+            <property name="key_store_pass" value="${env.KK_TO_RMQ_KEY_STORE_PASS:}"/> 
+            <property name="trust_store" value="${env.KK_TO_RMQ_TRUST_STORE:}"/>
+            <property name="trust_store_pass" value="${env.KK_TO_RMQ_TRUST_STORE_PASS:}"/>           
             <property name="username" value="${env.KK_TO_RMQ_USERNAME:guest}"/>
             <property name="password" value="${env.KK_TO_RMQ_PASSWORD:guest}"/>
         </properties>

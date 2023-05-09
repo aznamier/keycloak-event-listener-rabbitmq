@@ -63,8 +63,8 @@ therefore its easy for Rabbit client to subscribe to selective combinations eg:
   - `KK_TO_RMQ_PORT` - default: *5672*
   - `KK_TO_RMQ_VHOST` - default: *empty*
   - `KK_TO_RMQ_EXCHANGE` - default: *amq.topic*
-  - `KK_TO_RMQ_USERNAME` - default: *guest*
-  - `KK_TO_RMQ_PASSWORD` - default: *guest*
+  - `KK_TO_RMQ_USERNAME` - default: *admin*
+  - `KK_TO_RMQ_PASSWORD` - default: *admin*
   - `KK_TO_RMQ_USE_TLS` - default: *false*
 
 ###### Deprecated OPTION 2: edit Keycloak subsystem of WildFly (Keycloak 16 and older) standalone.xml or standalone-ha.xml:

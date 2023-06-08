@@ -21,13 +21,16 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 	private static final Logger log = Logger.getLogger(RabbitMqEventListenerProvider.class);
 	
 	private final RabbitMqConfig cfg;
-	private Channel channel;
+	private final Channel channel;
+
+	private final KeycloakSession session;
 
 	private final EventListenerTransaction tx = new EventListenerTransaction(this::publishAdminEvent, this::publishEvent);
 
 	public RabbitMqEventListenerProvider(Channel channel, KeycloakSession session, RabbitMqConfig cfg) {
 		this.cfg = cfg;
 		this.channel = channel;
+		this.session = session;
 		session.getTransactionManager().enlistAfterCompletion(tx);
 	}
 
@@ -48,7 +51,7 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 	
 	private void publishEvent(Event event) {
 		EventClientNotificationMqMsg msg = EventClientNotificationMqMsg.create(event);
-		String routingKey = RabbitMqConfig.calculateRoutingKey(event);
+		String routingKey = RabbitMqConfig.calculateRoutingKey(event, session);
 		String messageString = RabbitMqConfig.writeAsJson(msg, true);
 		
 		BasicProperties msgProps = RabbitMqEventListenerProvider.getMessageProps(EventClientNotificationMqMsg.class.getName());
@@ -57,7 +60,7 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 	
 	private void publishAdminEvent(AdminEvent adminEvent, boolean includeRepresentation) {
 		EventAdminNotificationMqMsg msg = EventAdminNotificationMqMsg.create(adminEvent);
-		String routingKey = RabbitMqConfig.calculateRoutingKey(adminEvent);
+		String routingKey = RabbitMqConfig.calculateRoutingKey(adminEvent, session);
 		String messageString = RabbitMqConfig.writeAsJson(msg, true);
 
 		BasicProperties msgProps = RabbitMqEventListenerProvider.getMessageProps(EventAdminNotificationMqMsg.class.getName());

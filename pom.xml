@@ -5,7 +5,7 @@
     <groupId>com.github.aznamier.keycloak.event.provider</groupId>
     <artifactId>keycloak-to-rabbit</artifactId>
     <packaging>jar</packaging>
-	<version>3.0.2</version>
+	<version>3.0.3</version>
     
 
 
@@ -101,13 +101,13 @@
 				</executions>
 			</plugin>
 			
-            <plugin>
-                <groupId>org.wildfly.plugins</groupId>
-                <artifactId>wildfly-maven-plugin</artifactId>
-                <configuration>
-                    <skip>false</skip>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.wildfly.plugins</groupId>-->
+<!--                <artifactId>wildfly-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <skip>false</skip>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

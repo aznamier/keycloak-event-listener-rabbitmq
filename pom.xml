@@ -5,8 +5,8 @@
     <groupId>com.github.aznamier.keycloak.event.provider</groupId>
     <artifactId>keycloak-to-rabbit</artifactId>
     <packaging>jar</packaging>
-	<version>3.0.3</version>
-    
+	<version>4.0.0</version>
+
 
 
     <name>Keycloak: Event Publisher to RabbitMQ</name>

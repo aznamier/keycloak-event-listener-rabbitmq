@@ -11,7 +11,7 @@
 
     <name>Keycloak: Event Publisher to RabbitMQ</name>
     <properties>
-    	<keycloak.version>21.1.2</keycloak.version>
+    	<keycloak.version>22.0.1</keycloak.version>
     	<jar.finalName>${project.artifactId}-${project.version}</jar.finalName>
     </properties>
     

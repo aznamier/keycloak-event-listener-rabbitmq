@@ -1,17 +1,16 @@
 package com.github.aznamier.keycloak.event.provider;
 
+import com.rabbitmq.client.ConnectionFactory;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
+
 import org.jboss.logging.Logger;
+
 import org.keycloak.Config.Scope;
 import org.keycloak.events.Event;
 import org.keycloak.events.admin.AdminEvent;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.keycloak.util.JsonSerialization;
-
 
 public class RabbitMqConfig {
 
@@ -116,49 +115,32 @@ public class RabbitMqConfig {
 		return value;
 		
 	}
-	
-	
-	public String getHostUrl() {
-		return hostUrl;
-	}
-	public void setHostUrl(String hostUrl) {
-		this.hostUrl = hostUrl;
-	}
-	public Integer getPort() {
-		return port;
-	}
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-	public String getUsername() {
-		return username;
-	}
-	public void setUsername(String username) {
-		this.username = username;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public String getVhost() {
-		return vhost;
-	}
-	public void setVhost(String vhost) {
-		this.vhost = vhost;
-	}
-	public Boolean getUseTls() {
-		return useTls;
-	}
-	public void setUseTls(Boolean useTls) {
-		this.useTls = useTls;
-	}
+
 	public String getExchange() {
 		return exchange;
 	}
 	public void setExchange(String exchange) {
 		this.exchange = exchange;
+	}
+
+	public ConnectionFactory newConnectionFactory() {
+		ConnectionFactory cf = new ConnectionFactory();
+		cf.setUsername(username);
+        cf.setPassword(password);
+        cf.setVirtualHost(vhost);
+        cf.setHost(hostUrl);
+        cf.setPort(port);
+        cf.setAutomaticRecoveryEnabled(true);
+
+        if (useTls.booleanValue()) {
+            try {
+                cf.useSslProtocol();
+            }
+            catch (Exception e) {
+                log.error("Could not use SSL protocol", e);
+            }
+        }
+        return cf;
 	}
 
 }

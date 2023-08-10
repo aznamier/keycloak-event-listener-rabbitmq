@@ -15,19 +15,17 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.AMQP.BasicProperties.Builder;
 import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
 
 public class RabbitMqEventListenerProvider implements EventListenerProvider {
 
 	private static final Logger log = Logger.getLogger(RabbitMqEventListenerProvider.class);
 	
 	private final RabbitMqConfig cfg;
-	private Channel channel;
-
 	private final EventListenerTransaction tx = new EventListenerTransaction(this::publishAdminEvent, this::publishEvent);
 
-	public RabbitMqEventListenerProvider(Channel channel, KeycloakSession session, RabbitMqConfig cfg) {
+	public RabbitMqEventListenerProvider(KeycloakSession session, RabbitMqConfig cfg) {
 		this.cfg = cfg;
-		this.channel = channel;
 		session.getTransactionManager().enlistAfterCompletion(tx);
 	}
 
@@ -78,7 +76,8 @@ public class RabbitMqEventListenerProvider implements EventListenerProvider {
 	}
 
 	private void publishNotification(String messageString, BasicProperties props, String routingKey) {
-		try {
+		try (Connection conn = cfg.newConnectionFactory().newConnection();
+			Channel channel = conn.createChannel()) {
 			channel.basicPublish(cfg.getExchange(), routingKey, props, messageString.getBytes(StandardCharsets.UTF_8));
 			log.tracef("keycloak-to-rabbitmq SUCCESS sending message: %s%n", routingKey);
 		} catch (Exception ex) {

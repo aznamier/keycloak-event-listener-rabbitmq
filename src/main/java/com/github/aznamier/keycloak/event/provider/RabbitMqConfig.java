@@ -28,6 +28,14 @@ public class RabbitMqConfig {
 	private String vhost;
 	private Boolean useTls;
 
+	// SSL context settings
+	private String trustStore;
+	private String trustStorePass;
+	private String keyStore;
+	private String keyStorePass;
+	//
+
+
 	private String exchange;
 	
 	public static String calculateRoutingKey(AdminEvent adminEvent) {
@@ -92,6 +100,13 @@ public class RabbitMqConfig {
 		cfg.vhost = resolveConfigVar(config, "vhost", "");
 		cfg.useTls = Boolean.valueOf(resolveConfigVar(config, "use_tls", "false"));
 
+		// SSL context settings
+		cfg.trustStore = resolveConfigVar(config, "trust_store", "");
+		cfg.trustStorePass = resolveConfigVar(config, "trust_store_pass", "");
+		cfg.keyStore = resolveConfigVar(config, "key_store", "");
+		cfg.keyStorePass = resolveConfigVar(config, "key_store_pass", "");
+		//
+
 		cfg.exchange = resolveConfigVar(config, "exchange", "amq.topic");
 		return cfg;
 		
@@ -154,6 +169,34 @@ public class RabbitMqConfig {
 	public void setUseTls(Boolean useTls) {
 		this.useTls = useTls;
 	}
+
+	// setters and getters SSL context setting
+	public void setTrustStore(String trustStore) {
+		this.trustStore = trustStore;
+	}
+	public void setTrustStorePass(String trustStorePass) {
+		this.trustStorePass = trustStorePass;
+	}
+	public void setKeyStore(String keyStore) {
+		this.keyStore = keyStore;
+	}
+	public void setKeyStorePass(String keyStorePass) {
+		this.keyStorePass = keyStorePass;
+	}
+	public String getTrustStore() {
+		return trustStore;
+	}
+	public String getTrustStorePass() {
+		return trustStorePass;
+	}
+	public String getKeyStore() {
+		return keyStore;
+	}
+	public String getKeytStorePass() {
+		return keyStorePass;
+	}
+	//
+
 	public String getExchange() {
 		return exchange;
 	}

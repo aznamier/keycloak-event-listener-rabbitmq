@@ -13,8 +13,6 @@
     <properties>
     	<keycloak.version>21.1.2</keycloak.version>
     	<jar.finalName>${project.artifactId}-${project.version}</jar.finalName>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
     </properties>
     
 	<distributionManagement>

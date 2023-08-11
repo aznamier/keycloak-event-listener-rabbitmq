@@ -5,12 +5,16 @@ batch
 /subsystem=keycloak-server/spi=eventsListener/:add
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:add(enabled="true")
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=url,value="${env.KK_TO_RMQ_URL:localhost}")
-/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=username,value="${env.KK_TO_RMQ_USERNAME:guest}")
-/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=password,value="${env.KK_TO_RMQ_PASSWORD:guest}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=username,value="${env.KK_TO_RMQ_USERNAME:admin}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=password,value="${env.KK_TO_RMQ_PASSWORD:admin}")
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=vhost,value="${env.KK_TO_RMQ_VHOST:}")
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=port,value=${env.KK_TO_RMQ_PORT:5672})
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=exchange,value="${env.KK_TO_RMQ_EXCHANGE:amq.topic}")
 /subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=use_tls,value="${env.KK_TO_RMQ_USE_TLS:false}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=key_store,value="${env.KK_TO_RMQ_KEY_STORE:false}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=key_store_pass,value="${env.KK_TO_RMQ_KEY_STORE_PASS:false}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=trust_store,value="${env.KK_TO_RMQ_TRUST_STORE:false}")
+/subsystem=keycloak-server/spi=eventsListener/provider=keycloak-to-rabbitmq/:map-put(name=properties,key=trust_store_pass,value="${env.KK_TO_RMQ_TRUST_STORE_PASS:false}")
 
 
 run-batch

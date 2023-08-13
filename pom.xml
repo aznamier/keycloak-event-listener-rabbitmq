@@ -5,14 +5,16 @@
     <groupId>com.github.aznamier.keycloak.event.provider</groupId>
     <artifactId>keycloak-to-rabbit</artifactId>
     <packaging>jar</packaging>
-	<version>3.0.3</version>
-    
+	<version>4.0.0</version>
+
 
 
     <name>Keycloak: Event Publisher to RabbitMQ</name>
     <properties>
-    	<keycloak.version>21.1.2</keycloak.version>
+    	<keycloak.version>22.0.0</keycloak.version>
     	<jar.finalName>${project.artifactId}-${project.version}</jar.finalName>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
     
 	<distributionManagement>
@@ -73,10 +75,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
+                <version>3.11.0</version>
             </plugin>
             
             <!-- Maven Assembly Plugin -->

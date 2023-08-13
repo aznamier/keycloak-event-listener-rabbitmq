@@ -3,10 +3,11 @@
 ##### A Keycloak SPI plugin that publishes events to a RabbitMq server.  
 
 | Plugin | min Keycloak ver |
-| -- | ---- |
-| 1.x | 10.x |
-| 2.x | 13.x |
-| 3.x | 16.x |
+|--------|------------------|
+| 1.x    | 10.x             |
+| 2.x    | 13.x             |
+| 3.x    | 16.x             |
+| 4.x    | 22.x             |
 
 For example here is the notification of the user updated by administrator
 

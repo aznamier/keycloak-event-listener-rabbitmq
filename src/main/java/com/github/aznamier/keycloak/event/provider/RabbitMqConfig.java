@@ -1,16 +1,15 @@
 package com.github.aznamier.keycloak.event.provider;
 
 
-import java.util.Locale;
-import java.util.regex.Pattern;
 import org.jboss.logging.Logger;
 import org.keycloak.Config.Scope;
 import org.keycloak.events.Event;
 import org.keycloak.events.admin.AdminEvent;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.keycloak.models.KeycloakSession;
 import org.keycloak.util.JsonSerialization;
+
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 
 public class RabbitMqConfig {
@@ -38,11 +37,11 @@ public class RabbitMqConfig {
 
 	private String exchange;
 	
-	public static String calculateRoutingKey(AdminEvent adminEvent) {
+	public static String calculateRoutingKey(AdminEvent adminEvent, KeycloakSession session) {
 		//KK.EVENT.ADMIN.<REALM>.<RESULT>.<RESOURCE_TYPE>.<OPERATION>
 		String routingKey = ROUTING_KEY_PREFIX
 				+ ".ADMIN"
-				+ "." + removeDots(adminEvent.getRealmId())
+				+ "." + removeDots(session.realms().getRealm(adminEvent.getRealmId()).getName())
 				+ "." + (adminEvent.getError() != null ? "ERROR" : "SUCCESS")
 				+ "." + adminEvent.getResourceTypeAsString()
 				+ "." + adminEvent.getOperationType().toString()
@@ -51,11 +50,11 @@ public class RabbitMqConfig {
 		return normalizeKey(routingKey);
 	}
 	
-	public static String calculateRoutingKey(Event event) {
+	public static String calculateRoutingKey(Event event, KeycloakSession session) {
 		//KK.EVENT.CLIENT.<REALM>.<RESULT>.<CLIENT>.<EVENT_TYPE>
 		String routingKey = ROUTING_KEY_PREFIX
 					+ ".CLIENT"
-					+ "." + removeDots(event.getRealmId())
+					+ "." + removeDots(session.realms().getRealm(event.getRealmId()).getName())
 					+ "." + (event.getError() != null ? "ERROR" : "SUCCESS")
 					+ "." + removeDots(event.getClientId())
 					+ "." + event.getType();
@@ -63,7 +62,7 @@ public class RabbitMqConfig {
 		return normalizeKey(routingKey);
 	}
 
-	//Remove all characters apart a-z, A-Z, 0-9, space, underscore, eplace all spaces and hyphens with underscore
+	//Remove all characters apart a-z, A-Z, 0-9, space, underscore, replace all spaces and hyphens with underscore
 	public static String normalizeKey(CharSequence stringToNormalize) {
 		return SPACE.matcher(SPECIAL_CHARACTERS.matcher(stringToNormalize).replaceAll(""))
 				.replaceAll("_");
@@ -86,7 +85,7 @@ public class RabbitMqConfig {
 		} catch (Exception e) {
 			log.error("Could not serialize to JSON", e);
 		}
-		return "unparsable";
+		return "unparseable";
 	}
 	
 	

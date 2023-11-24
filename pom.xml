@@ -5,7 +5,7 @@
     <groupId>com.github.aznamier.keycloak.event.provider</groupId>
     <artifactId>keycloak-to-rabbit</artifactId>
     <packaging>jar</packaging>
-	<version>3.0.3</version>
+	<version>3.0.4</version>
     
 
 

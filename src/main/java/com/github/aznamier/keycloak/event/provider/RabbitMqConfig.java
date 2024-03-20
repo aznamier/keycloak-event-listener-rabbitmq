@@ -41,7 +41,7 @@ public class RabbitMqConfig {
 		//KK.EVENT.ADMIN.<REALM>.<RESULT>.<RESOURCE_TYPE>.<OPERATION>
 		String routingKey = ROUTING_KEY_PREFIX
 				+ ".ADMIN"
-				+ "." + removeDots(session.realms().getRealm(adminEvent.getRealmId()).getName())
+				+ "." + removeDots(session.getContext().getRealm().getName())
 				+ "." + (adminEvent.getError() != null ? "ERROR" : "SUCCESS")
 				+ "." + adminEvent.getResourceTypeAsString()
 				+ "." + adminEvent.getOperationType().toString()
